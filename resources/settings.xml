@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+  <category label="General">
+  		<setting id="debug_mode" label="Debug mode" type="bool" default="false" visible="true"/>
+		<setting id="max_time" label="Maximum allowed playback time before asking to stop" type="slider" default="4" range="1,7" option="int" />
+		<setting id="check_time" label="Service check time (minutes)" type="number" default="5"/>
+		<setting id="waiting_time_dialog" label="Waiting time for the dialog (before stop) - seconds" type="number" default="30"/>
+		<setting id="check_time_next" label="Next check time if dialog is cancelled (minutes)" type="number" default="30"/>
+  </category>  
+</settings>
