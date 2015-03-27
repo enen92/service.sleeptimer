@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
   <category label="General">
-  		<setting id="debug_mode" label="Debug mode" type="bool" default="false" visible="true"/>
-		<setting id="max_time" label="Maximum allowed playback time before asking to stop" type="slider" default="4" range="1,7" option="int" />
-		<setting id="check_time" label="Service check time (minutes)" type="number" default="5"/>
-		<setting id="waiting_time_dialog" label="Waiting time for the dialog (before stop) - seconds" type="number" default="30"/>
-		<setting id="check_time_next" label="Next check time if dialog is cancelled (minutes)" type="number" default="30"/>
+		<!--<setting id="max_time" label="Maximum allowed playback time before asking to stop" type="slider" default="4" range="1,7" option="int" />-->
+		<setting id="max_time" label="Maximum allowed playback time (minutes) before asking to stop" type="labelenum" values="90|120|150|180|210|240|270|300|330|360|390|420"/>
+		<setting id="check_time" label="Service check time (minutes)" type="labelenum" values="1|3|5|10|15|20|25|30"/>
+		<setting id="waiting_time_dialog" label="Waiting time for the dialog (before stop) - seconds" type="labelenum" values="30|45|60|90|120|150|180"/>
+		<setting id="check_time_next" label="Next check time if dialog is cancelled (minutes)" type="labelenum" values="15|30|45|60|90|120"/>
+		<setting id="audio_change" label="Slow mute audio" type="bool" default="true" visible="true"/>
+		<setting type="sep"/>
+		<setting id="debug_mode" label="Debug mode" type="bool" default="false" visible="true"/>
   </category>  
 </settings>
