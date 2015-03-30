@@ -1,13 +1,28 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
-  <category label="General">
-		<!--<setting id="max_time" label="Maximum allowed playback time before asking to stop" type="slider" default="4" range="1,7" option="int" />-->
-		<setting id="max_time" label="Maximum allowed playback time (minutes) before asking to stop" type="labelenum" values="90|120|150|180|210|240|270|300|330|360|390|420"/>
-		<setting id="check_time" label="Service check time (minutes)" type="labelenum" values="1|3|5|10|15|20|25|30"/>
-		<setting id="waiting_time_dialog" label="Waiting time for the dialog (before stop) - seconds" type="labelenum" values="30|45|60|90|120|150|180"/>
-		<setting id="check_time_next" label="Next check time if dialog is cancelled (minutes)" type="labelenum" values="15|30|45|60|90|120"/>
-		<setting id="audio_change" label="Slow mute audio" type="bool" default="true" visible="true"/>
-		<setting type="sep"/>
+	<category label="General">
+		<setting id="check_time" label="Service check time (minutes)" default="5" type="labelenum" values="1|3|5|10|15|20|25|30"/>
+		<setting id="waiting_time_dialog" label="Waiting time for the dialog (before stop) (seconds)" type="labelenum" default="60" values="30|45|60|90|120|150|180"/>
+		<setting id="audio_change" label="Slow mute audio before stop playing" type="bool" default="true" visible="true"/>
+		<setting id="audio_change_rate" label="Time between 1% volume change  (millisec)" enable="eq(-1,true)" type="slider" default="500" range="50,50,3000" option="int"/>
+		<setting id="check_time_next" label="Next check time if dialog is cancelled (minutes)" default="30" type="labelenum" values="15|30|45|60|90|120"/>
+		<setting id="enable_screensaver" label="Enable Screensaver after stopping" type="bool" default="false" visible="true"/>
+	</category>
+	<category label="Audio/Video Supervision settings">
+		<setting id="video_enable" label="Enable Video Supervision" type="bool" default="true" visible="true"/>
+		<setting id="audio_enable" label="Enable Audio Supervision" type="bool" default="true" visible="true"/>
+		<setting label="Maximum Playing time (minutes) before asking to stop" type="lsep"/>
+		<setting id="max_time_video" label="Video Playbacktime" type="labelenum" default="150" enable="eq(-3,true)" values="90|120|150|180|210|240|270|300|330|360|390|420"/>
+		<setting id="max_time_audio" label="Audio Playbacktime" type="labelenum" default="150" enable="eq(-3,true)" values="90|120|150|180|210|240|270|300|330|360|390|420"/>
+	</category>
+	<category label="Debug">
 		<setting id="debug_mode" label="Debug mode" type="bool" default="false" visible="true"/>
-  </category>  
+		<setting label="'enable' debugging sets:" type="lsep" enable="eq(-1,true)"/>
+		<setting type="sep"/>
+		<setting label="Audio and Video-Check enabled" type="lsep" enable="eq(-3,true)"/>
+		<setting label="Service check time (minutes): '1'" type="lsep" enable="eq(-4,true)"/>
+		<setting label="Waiting time for the dialog (before stop) (seconds): '30'" type="lsep" enable="eq(-5,true)"/>
+		<setting type="sep"/>
+		<setting label="It doesn't matter, what you set in the other Tabs!" type="lsep" enable="eq(-7,true)"/>
+	</category>
 </settings>
