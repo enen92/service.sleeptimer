@@ -11,8 +11,8 @@
     <extension point="xbmc.addon.metadata">
         <summary lang="en">Did you fall asleep? Get better control over media playback </summary>
         <summary lang="pt">Adormeceu? Tenha melhor controlo sobre a reprodução de média </summary>
-         <description lang="en">This service addon makes Kodi stop any playback if it exceeds a given playback time. If you have that awful habit of leaving Kodi playing live content after you fell asleep, this addon is for you! It gives extended control over the playback time. Step mute the audio or enable the screensaver after playback is stopped.</description>
-         <description lang="pt">Este service addon faz com que o Kodi pare qualquer playback se o seu tempo exceder um valor fornecido. Se tiver o hábito de adormecer enquanto o Kodi está a reproduzir conteúdo multimédia, este addon é para si! Este extende o controlo do tempo de reprodução. Baixe o volume do áudio ou active o protector de ecrã após a reprodução ser interrompida.</description>
+         <description lang="en">This service addon makes Kodi stop any playback if it exceeds a given playback time. If you have that awful habit of leaving Kodi playing live content after you fell asleep, this addon is for you! It gives extended control over the playback time. Step mute the audio, enable the screensaver or run a custom command after the playback is stopped.</description>
+         <description lang="pt">Este service addon faz com que o Kodi pare qualquer playback se o seu tempo exceder um valor fornecido. Se tiver o hábito de adormecer enquanto o Kodi está a reproduzir conteúdo multimédia, este addon é para si! Este extende o controlo do tempo de reprodução. Baixe o volume do áudio, active o protector de ecrã ou execute um comando customizado após a reprodução ser interrompida.</description>
         <platform>all</platform>
         <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
     </extension>
