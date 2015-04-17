@@ -8,28 +8,15 @@ import xbmcaddon
 import xbmcvfs
 import json
 
-## changed to "idle.time"
-#__addon__ = xbmcaddon.Addon()
-
-## id="service.safestop"
-#__addonid__ = __addon__.getAddonInfo('id')
-
-## name="Safe Stop"
-#__addonname__   = __addon__.getAddonInfo('name')
-
-##__path__ = __addon__.getAddonInfo('path')
-
-##addon_id = 'service.safestop'
 msgdialogprogress = xbmcgui.DialogProgress()
 
-addon_id = 'service.safestop'
+addon_id = 'service.sleeptimer'
 selfAddon = xbmcaddon.Addon(id=addon_id)
 datapath = xbmc.translatePath(selfAddon.getAddonInfo('profile')).decode('utf-8')
 addonfolder = xbmc.translatePath(selfAddon.getAddonInfo('path')).decode('utf-8')
 debug=selfAddon.getSetting('debug_mode')
-## version="2.0.0"
-__version__ = selfAddon.getAddonInfo('version')
 
+__version__ = selfAddon.getAddonInfo('version')
 check_time = selfAddon.getSetting('check_time')
 check_time_next = int(selfAddon.getSetting('check_time_next'))
 time_to_wait = int(selfAddon.getSetting('waiting_time_dialog'))
@@ -160,12 +147,6 @@ class service:
 				if debug == 'true':
 					_log ( "DEBUG: what_is_playing: " + str(what_is_playing) )
 				
-				#executebuiltin(function)--Execute a built in XBMC function.
-				#function : string - builtin function to execute.
-				#List of functions -http://kodi.wiki/view/List_of_Built_In_Functions 
-				#example:
-				#- xbmc.executebuiltin('RunXBE(c:\avalaunch.xbe)')
-
 				if debug == 'true':
 					_log ( "DEBUG: idle_time: '" + str(idle_time) + "s'; idle_time_in_minutes: '" + str(idle_time_in_minutes) + "'" )
 					_log ( "DEBUG: max_time_in_minutes: " + str(max_time_in_minutes) )
@@ -208,7 +189,6 @@ class service:
 						msgdialogprogress.close()
 
 						# softmute audio before stop playing
-						# source: http://www.kodinerds.net/index.php/Thread/39369-Softmute/
 						# get actual volume
 						if audiochange == 'true':
 							resp = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume"] }, "id": 1}')
@@ -234,7 +214,6 @@ class service:
 								curVol = dct["result"]["volume"]
 								# _log ( "set Volume to " + str(curVol) )
 								# we can move upwards fast, because there is nothing playing
-								#xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "volume": %d }, "id": 1}' %(curVol) )
 								xbmc.executebuiltin('SetVolume(%d,showVolumeBar)' % (curVol))
 
 						if enable_screensaver == 'true':
