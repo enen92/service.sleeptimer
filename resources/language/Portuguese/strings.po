@@ -79,7 +79,7 @@ msgstr "Depuração"
 
 msgctxt "#30016"
 msgid "Debug mode"
-""
+msgstr "Mode de depuração"
 
 msgctxt "#30017"
 msgid "'Enable' debugging sets:"
@@ -100,7 +100,4 @@ msgstr "Tempo de espera para a dialog (antes de parar) (segundos): '30'"
 msgctxt "#30021"
 msgid "It doesn't matter, what you set in the other Tabs!"
 msgstr "Estas definições são independentes das restantes"
-
-
-
 

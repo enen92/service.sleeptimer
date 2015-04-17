@@ -102,12 +102,3 @@ msgctxt "#30021"
 msgid "It doesn't matter, what you set in the other Tabs!"
 ""
 
-
-
-
-
-
-
-
-
-
