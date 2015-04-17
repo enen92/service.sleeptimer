@@ -242,7 +242,8 @@ class service:
                             if debug == 'true':
                                 _log ( "DEBUG: Activating screensaver" )
                             xbmc.executebuiltin('ActivateScreensaver')   
-                        #
+                        
+                        #Run a custom cmd after playback is stopped
                         if custom_cmd == 'true':
                             if debug == 'true':
                                 _log ( "DEBUG: Running custom script" )
