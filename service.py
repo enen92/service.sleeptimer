@@ -1,4 +1,21 @@
-#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+""" Service Sleep Timer  (c)  2015 enen92, Solo0815
+
+# This program is free software; you can redistribute it and/or modify it under the terms 
+# of the GNU General Public License as published by the Free Software Foundation; 
+# either version 2 of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. 
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with this program; 
+# if not, see <http://www.gnu.org/licenses/>.
+
+   	
+"""
+
 import time
 import datetime
 import xbmc
@@ -30,6 +47,9 @@ max_time_video = int(selfAddon.getSetting('max_time_video'))
 enable_screensaver = selfAddon.getSetting('enable_screensaver')
 
 # Functions:
+def translate(text):
+      return selfAddon.getLocalizedString(text).encode('utf-8')
+
 def _log( message ):
 		print addon_id + ": " + str(message)
 
@@ -159,7 +179,7 @@ class service:
 					if debug == 'true':
 						_log ( "DEBUG: idle_time exceeds max allowed. Display Progressdialog" )
 
-					ret = msgdialogprogress.create("Safe Stop","Cancel to continue playing")
+					ret = msgdialogprogress.create(translate(30000),translate(30001))
 					secs=0
 					percent=0
 					# use the multiplier 100 to get better %/calculation 
@@ -171,7 +191,7 @@ class service:
 						percent = increment*secs/100
 						secs_left = str((time_to_wait - secs))
 						remaining_display = str(secs_left) + " seconds left."
-						msgdialogprogress.update(percent,"Cancel to continue playing",remaining_display)
+						msgdialogprogress.update(percent,translate(30001),remaining_display)
 						xbmc.sleep(1000)
 						if (msgdialogprogress.iscanceled()):
 							cancelled = True
