@@ -79,7 +79,7 @@ msgstr "Depuração"
 
 msgctxt "#30016"
 msgid "Debug mode"
-msgstr "Mode de depuração"
+msgstr "Modo de depuração"
 
 msgctxt "#30017"
 msgid "'Enable' debugging sets:"
