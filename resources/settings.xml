@@ -7,6 +7,8 @@
 		<setting id="audio_change_rate" label="30006" enable="eq(-1,true)" type="slider" default="500" range="50,50,3000" option="int"/>
 		<setting id="check_time_next" label="30007" default="30" type="labelenum" values="15|30|45|60|90|120"/>
 		<setting id="enable_screensaver" label="30008" type="bool" default="false" visible="true"/>
+	     <setting id="custom_cmd" label="30022" type="bool" default="false" visible="true"/>
+	     <setting id="cmd" type="text" label="30023" default="" visible="eq(-1,true)"/>
 	</category>
 	<category label="30009">
 		<setting id="video_enable" label="30010" type="bool" default="true" visible="true"/>

@@ -102,3 +102,10 @@ msgctxt "#30021"
 msgid "It doesn't matter, what you set in the other Tabs!"
 ""
 
+msgctxt "#30022"
+msgid "Execute custom cmd after playback stop"
+""
+
+msgctxt "#30023"
+msgid "Custom CMD"
+""

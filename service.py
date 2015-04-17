@@ -24,6 +24,7 @@ import xbmcgui
 import xbmcaddon
 import xbmcvfs
 import json
+import os
 
 msgdialogprogress = xbmcgui.DialogProgress()
 
@@ -45,6 +46,8 @@ video_enable = str(selfAddon.getSetting('video_enable'))
 max_time_audio = int(selfAddon.getSetting('max_time_audio'))
 max_time_video = int(selfAddon.getSetting('max_time_video'))
 enable_screensaver = selfAddon.getSetting('enable_screensaver')
+custom_cmd = selfAddon.getSetting('custom_cmd')
+cmd = selfAddon.getSetting('cmd')
 
 # Functions:
 def translate(text):
@@ -219,7 +222,6 @@ class service:
                                 curVol = dct["result"]["volume"]
 
                                 for i in range(curVol - 1, muteVol - 1, -1):
-                                    #xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": { "volume": %d }, "id": 1}' %(i) )
                                     xbmc.executebuiltin('SetVolume(%d,showVolumeBar)' % (i))
                                     # move down slowly
                                     xbmc.sleep(audiochangerate)
@@ -239,7 +241,12 @@ class service:
                         if enable_screensaver == 'true':
                             if debug == 'true':
                                 _log ( "DEBUG: Activating screensaver" )
-                            xbmc.executebuiltin('ActivateScreensaver')
+                            xbmc.executebuiltin('ActivateScreensaver')   
+                        #
+                        if custom_cmd == 'true':
+                            if debug == 'true':
+                                _log ( "DEBUG: Running custom script" )
+                            os.system(cmd)
                 else:
                     if debug == 'true':
                         _log ( "DEBUG: Playing the stream, time does not exceed max limit" )

@@ -101,3 +101,10 @@ msgctxt "#30021"
 msgid "It doesn't matter, what you set in the other Tabs!"
 msgstr "Estas definições são independentes das restantes"
 
+msgctxt "#30022"
+msgid "Execute custom cmd after playback stop"
+msgstr "Executar comando customizado após a reprodução ser parada"
+
+msgctxt "#30023"
+msgid "Custom CMD"
+msgstr "Comando customizado"
