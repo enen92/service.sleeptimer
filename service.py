@@ -234,7 +234,6 @@ class service:
                             xbmc.sleep(2000) # wait 2s before changing the volume back
                             if (dct.has_key("result")) and (dct["result"].has_key("volume")):
                                 curVol = dct["result"]["volume"]
-                                # _log ( "set Volume to " + str(curVol) )
                                 # we can move upwards fast, because there is nothing playing
                                 xbmc.executebuiltin('SetVolume(%d,showVolumeBar)' % (curVol))
 
