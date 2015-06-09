@@ -228,7 +228,7 @@ class service:
 
                         # stop player anyway
                         xbmc.sleep(5000) # wait 5s before stopping
-                        xbmc.Player().stop()
+                        xbmc.executebuiltin('PlayerControl(Stop)')
 
                         if audiochange == 'true':
                             xbmc.sleep(2000) # wait 2s before changing the volume back
