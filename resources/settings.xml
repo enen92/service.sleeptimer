@@ -14,8 +14,8 @@
 		<setting id="video_enable" label="30010" type="bool" default="true" visible="true"/>
 		<setting id="audio_enable" label="30011" type="bool" default="true" visible="true"/>
 		<setting label="30012" type="lsep"/>
-		<setting id="max_time_video" label="30013" type="labelenum" default="150" enable="eq(-3,true)" values="90|120|150|180|210|240|270|300|330|360|390|420"/>
-		<setting id="max_time_audio" label="30014" type="labelenum" default="150" enable="eq(-3,true)" values="90|120|150|180|210|240|270|300|330|360|390|420"/>
+		<setting id="max_time_video" label="30013" type="labelenum" default="150" enable="eq(-3,true)" values="30|60|90|120|150|180|210|240|270|300|330|360|390|420"/>
+		<setting id="max_time_audio" label="30014" type="labelenum" default="150" enable="eq(-3,true)" values="30|60|90|120|150|180|210|240|270|300|330|360|390|420"/>
 	</category>
 	<category label="30015">
 		<setting id="debug_mode" label="30016" type="bool" default="false" visible="true"/>
