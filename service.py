@@ -81,28 +81,21 @@ def get_kodi_time():
     return int(time_string)
 
 def should_i_supervise(kodi_time,supervise_start_time,supervise_end_time):
-    if selfAddon.getSetting('supervision_mode') == '0' or debug:
+    if selfAddon.getSetting('supervision_mode') == 'Always' or debug == 'true':
+        return True
+
+    if supervise_start_time is None or supervise_end_time is None:
+        return True
+
+    if supervise_end_time < supervise_start_time:
+        supervise_end_time += 2400
+        if kodi_time < supervise_start_time:
+            kodi_time += 2400
+
+    if supervise_start_time < kodi_time and kodi_time < supervise_end_time:
         return True
     else:
-        if supervise_start_time == 0 and supervise_end_time == 0:
-            return True
-        elif kodi_time > supervise_start_time:
-            if supervise_end_time > supervise_start_time:
-                if kodi_time < supervise_end_time:
-                    return True
-                else:
-                    return False
-            else:
-                supervise_end_time += 2400
-                if kodi_time < supervise_end_time:
-                    return True
-                else:
-                    return False
-        else:
-            if kodi_time < supervise_end_time:
-                return True
-            else:
-                return False
+        return False
 
 class service:
     def __init__(self):
@@ -113,10 +106,10 @@ class service:
             kodi_time = get_kodi_time()
             try:
                 supervise_start_time = int(selfAddon.getSetting('hour_start_sup').split(':')[0]+selfAddon.getSetting('hour_start_sup').split(':')[1])
-            except: supervise_start_time = 0
+            except: supervise_start_time = None
             try:
                 supervise_end_time = int(selfAddon.getSetting('hour_end_sup').split(':')[0]+selfAddon.getSetting('hour_end_sup').split(':')[1])
-            except: supervise_end_time = 0
+            except: supervise_end_time = None
             proceed = should_i_supervise(kodi_time,supervise_start_time,supervise_end_time)
             if proceed:
                 if FirstCycle:
