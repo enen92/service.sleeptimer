@@ -81,7 +81,7 @@ def get_kodi_time():
     return int(time_string)
 
 def should_i_supervise(kodi_time,supervise_start_time,supervise_end_time):
-    if selfAddon.getSetting('supervision_mode') == '0' or debug:
+    if selfAddon.getSetting('supervision_mode') == '0' or debug == 'true':
         return True
     else:
         if supervise_start_time == 0 and supervise_end_time == 0:
