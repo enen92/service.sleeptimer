@@ -193,7 +193,7 @@ class service:
                                 _log ( "DEBUG: enable_video is true" )
                                 print_act_playing_file()
                             what_is_playing = "video"
-                            max_time_in_minutes = maxaudio_time_in_minutes
+                            max_time_in_minutes = maxvideo_time_in_minutes
                         else:
                             if debug == 'true':
                                 _log ( "DEBUG: Player is playing Video, but check is disabled" )
