@@ -72,7 +72,7 @@ def do_next_check( iTimeToWait ):
 
 def get_kodi_time():
     am_pm = xbmc.getInfoLabel('System.Time(xx)').lower()
-    system_time = xbmc.getInfoLabel('System.Time')
+    system_time = xbmc.getInfoLabel('System.Time(hh:mm)')
     hour = system_time.split(':')[0]
     minute = system_time.split(':')[1]
     if am_pm == 'pm':
