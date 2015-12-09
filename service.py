@@ -168,8 +168,8 @@ class service:
                         _log ( "DEBUG: max_time_in_minutes before calculation: " + str(max_time_in_minutes) )
 
                     if next_check == 'true':
-                        # add "diff_betwenn_idle_and_check_time" to "idle_time_in_minutes"
-                        idle_time_in_minutes += int(diff_betwenn_idle_and_check_time)
+                        # add "diff_between_idle_and_check_time" to "idle_time_in_minutes"
+                        idle_time_in_minutes += int(diff_between_idle_and_check_time)
 
                     if debug == 'true' and max_time_in_minutes == -1:
                         _log ( "DEBUG: max_time_in_minutes after calculation: " + str(max_time_in_minutes) )
