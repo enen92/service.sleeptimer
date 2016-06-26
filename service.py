@@ -29,7 +29,7 @@ import os
 msgdialogprogress = xbmcgui.DialogProgress()
 
 addon_id = 'service.sleeptimer'
-selfAddon = xbmcaddon.Addon(id=addon_id)
+selfAddon = xbmcaddon.Addon(addon_id)
 datapath = xbmc.translatePath(selfAddon.getAddonInfo('profile')).decode('utf-8')
 addonfolder = xbmc.translatePath(selfAddon.getAddonInfo('path')).decode('utf-8')
 debug=selfAddon.getSetting('debug_mode')
