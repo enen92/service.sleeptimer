@@ -306,5 +306,6 @@ class service:
                     _log ( "DEBUG: diff_between_idle_and_check_time: " + str(diff_between_idle_and_check_time) )
 
                 do_next_check(iCheckTime)
-
+            #prevent from high CPU usage
+            time.sleep(1)
 service()
