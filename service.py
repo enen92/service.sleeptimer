@@ -29,7 +29,7 @@ import os
 msgdialogprogress = xbmcgui.DialogProgress()
 
 addon_id = 'service.sleeptimer'
-selfAddon = xbmcaddon.Addon(addon_id)
+selfAddon = xbmcaddon.Addon(id=addon_id)
 datapath = xbmc.translatePath(selfAddon.getAddonInfo('profile')).decode('utf-8')
 addonfolder = xbmc.translatePath(selfAddon.getAddonInfo('path')).decode('utf-8')
 debug=selfAddon.getSetting('debug_mode')
@@ -54,7 +54,7 @@ def translate(text):
     return selfAddon.getLocalizedString(text).encode('utf-8')
 
 def _log( message ):
-    print addon_id + ": " + str(message)
+    print(addon_id + ": " + str(message))
 
 # print the actual playing file in DEBUG-mode
 def print_act_playing_file():
@@ -269,6 +269,25 @@ class service:
                                         xbmc.executebuiltin('SetVolume(%d,showVolumeBar)' % (i))
                                         # move down slowly
                                         xbmc.sleep(audiochangerate)
+                                        
+                                        #check if user pressed something while audio volume is going down and abort sleep process
+                                        idle_time_in_minutes = int(xbmc.getGlobalIdleTime())/60
+                                        if idle_time_in_minutes < max_time_in_minutes:
+                                            _log ( "DEBUG: User pressed a key while volume is going down. Aborting sleep process" )
+                                            #set volume back
+                                            _log ( "DEBUG: Setting back original volume")
+                                            xbmc.executebuiltin('SetVolume(%d,showVolumeBar)' % (dct["result"]["volume"]))
+                                            iCheckTime = check_time_next
+                                            _log ( "Progressdialog cancelled, next check in " + str(iCheckTime) + " min" )
+                                            # set next_check, so that it opens the dialog after "iCheckTime"
+                                            next_check = True
+                                            cancelled = True
+                                            break
+                                    if cancelled:
+                                        continue
+                                            
+                                        
+                                        
 
                             # stop player anyway
                             xbmc.sleep(5000) # wait 5s before stopping
