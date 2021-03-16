@@ -39,7 +39,7 @@ msgid "General"
 msgstr ""
 
 msgctxt "#30006"
-msgid "Time between 1% volume change  (millisec)"
+msgid "Time it takes to reach 0% volume (minutes)"
 msgstr ""
 
 msgctxt "#30007"

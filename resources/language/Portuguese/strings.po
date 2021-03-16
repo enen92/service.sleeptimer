@@ -38,8 +38,8 @@ msgid "General"
 msgstr "Geral"
 
 msgctxt "#30006"
-msgid "Time between 1% volume change  (millisec)"
-msgstr "Tempo entre a alteração de 1% volume (millisec)"
+msgid "Time it takes to reach 0% volume (minutes)"
+msgstr "Tempo que leva para atingir o volume de 0% (minutos)"
 
 msgctxt "#30007"
 msgid "Next check time if dialog is cancelled (minutes)"

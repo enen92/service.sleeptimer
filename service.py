@@ -39,7 +39,7 @@ check_time = selfAddon.getSetting('check_time')
 check_time_next = int(selfAddon.getSetting('check_time_next'))
 time_to_wait = int(selfAddon.getSetting('waiting_time_dialog'))
 audiochange = selfAddon.getSetting('audio_change')
-audiochangerate = int(selfAddon.getSetting('audio_change_rate'))
+audiointervallength = int(selfAddon.getSetting('audio_interval_length'))
 global audio_enable
 audio_enable = str(selfAddon.getSetting('audio_enable'))
 video_enable = str(selfAddon.getSetting('video_enable'))
@@ -269,7 +269,7 @@ class service:
                                     for i in range(curVol - 1, muteVol - 1, -1):
                                         xbmc.executebuiltin('SetVolume(%d,showVolumeBar)' % (i))
                                         # move down slowly
-                                        xbmc.sleep(audiochangerate)
+                                        xbmc.sleep(audiointervallength * 600)
 
                             # stop player anyway
                             monitor.waitForAbort(5) # wait 5s before stopping
