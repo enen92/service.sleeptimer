@@ -268,8 +268,9 @@ class service:
 
                                     for i in range(curVol - 1, muteVol - 1, -1):
                                         xbmc.executebuiltin('SetVolume(%d,showVolumeBar)' % (i))
-                                        # move down slowly
-                                        xbmc.sleep(audiointervallength * 600)
+                                        # move down slowly ((total mins / steps) * ms in a min)
+                                        # (curVol-muteVol) runs the full timer where a user might control their volume via kodi instead of cutting it short when assuming a set volume of 100%
+                                        xbmc.sleep(round(audiointervallength / (curVol - muteVol) * 60000))
 
                             # stop player anyway
                             monitor.waitForAbort(5) # wait 5s before stopping
