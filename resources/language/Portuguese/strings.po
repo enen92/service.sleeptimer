@@ -128,3 +128,7 @@ msgstr "Sempre"
 msgctxt "#30028"
 msgid "Specific Time"
 msgstr "Tempo especifico"
+
+msgctxt "#30029"
+msgid "Set the minimum volume %"
+msgstr "Defina o volume mínimo %"

@@ -39,6 +39,7 @@ check_time = selfAddon.getSetting('check_time')
 check_time_next = int(selfAddon.getSetting('check_time_next'))
 time_to_wait = int(selfAddon.getSetting('waiting_time_dialog'))
 audiochange = selfAddon.getSetting('audio_change')
+muteVol = int(selfAddon.getSetting('mute_volume'))
 audiointervallength = int(selfAddon.getSetting('audio_interval_length'))
 global audio_enable
 audio_enable = str(selfAddon.getSetting('audio_enable'))
@@ -261,7 +262,6 @@ class service:
                             if audiochange == 'true':
                                 resp = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume"] }, "id": 1}')
                                 dct = json.loads(resp)
-                                muteVol = 10
 
                                 if ("result" in dct) and ("volume" in dct["result"]):
                                     curVol = dct["result"]["volume"]
