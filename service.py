@@ -30,8 +30,8 @@ msgdialogprogress = xbmcgui.DialogProgress()
 
 addon_id = 'service.sleeptimer'
 selfAddon = xbmcaddon.Addon(addon_id)
-datapath = xbmc.translatePath(selfAddon.getAddonInfo('profile')).decode('utf-8')
-addonfolder = xbmc.translatePath(selfAddon.getAddonInfo('path')).decode('utf-8')
+datapath = xbmc.translatePath(selfAddon.getAddonInfo('profile'))
+addonfolder = xbmc.translatePath(selfAddon.getAddonInfo('path'))
 debug=selfAddon.getSetting('debug_mode')
 
 __version__ = selfAddon.getAddonInfo('version')
@@ -239,7 +239,7 @@ class service:
                             percent = increment*secs/100
                             secs_left = str((time_to_wait - secs))
                             remaining_display = str(secs_left) + " seconds left."
-                            msgdialogprogress.update(percent,translate(30001),remaining_display)
+                            msgdialogprogress.update(int(percent),translate(30001))
                             xbmc.sleep(1000)
                             if (msgdialogprogress.iscanceled()):
                                 cancelled = True
@@ -263,7 +263,7 @@ class service:
                                 dct = json.loads(resp)
                                 muteVol = 10
 
-                                if (dct.has_key("result")) and (dct["result"].has_key("volume")):
+                                if ("result" in dct) and ("volume" in dct["result"]):
                                     curVol = dct["result"]["volume"]
 
                                     for i in range(curVol - 1, muteVol - 1, -1):
@@ -277,7 +277,7 @@ class service:
 
                             if audiochange == 'true':
                                 monitor.waitForAbort(2) # wait 2s before changing the volume back
-                                if (dct.has_key("result")) and (dct["result"].has_key("volume")):
+                                if ("result" in dct) and ("volume" in dct["result"]):
                                     curVol = dct["result"]["volume"]
                                     # we can move upwards fast, because there is nothing playing
                                     xbmc.executebuiltin('SetVolume(%d,showVolumeBar)' % (curVol))
