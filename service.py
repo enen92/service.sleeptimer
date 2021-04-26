@@ -39,7 +39,8 @@ check_time = selfAddon.getSetting('check_time')
 check_time_next = int(selfAddon.getSetting('check_time_next'))
 time_to_wait = int(selfAddon.getSetting('waiting_time_dialog'))
 audiochange = selfAddon.getSetting('audio_change')
-audiochangerate = int(selfAddon.getSetting('audio_change_rate'))
+muteVol = int(selfAddon.getSetting('mute_volume'))
+audiointervallength = int(selfAddon.getSetting('audio_interval_length'))
 global audio_enable
 audio_enable = str(selfAddon.getSetting('audio_enable'))
 video_enable = str(selfAddon.getSetting('video_enable'))
@@ -261,15 +262,15 @@ class service:
                             if audiochange == 'true':
                                 resp = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume"] }, "id": 1}')
                                 dct = json.loads(resp)
-                                muteVol = 10
 
                                 if ("result" in dct) and ("volume" in dct["result"]):
                                     curVol = dct["result"]["volume"]
 
                                     for i in range(curVol - 1, muteVol - 1, -1):
                                         xbmc.executebuiltin('SetVolume(%d,showVolumeBar)' % (i))
-                                        # move down slowly
-                                        xbmc.sleep(audiochangerate)
+                                        # move down slowly ((total mins / steps) * ms in a min)
+                                        # (curVol-muteVol) runs the full timer where a user might control their volume via kodi instead of cutting it short when assuming a set volume of 100%
+                                        xbmc.sleep(round(audiointervallength / (curVol - muteVol) * 60000))
 
                             # stop player anyway
                             monitor.waitForAbort(5) # wait 5s before stopping
