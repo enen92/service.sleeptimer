@@ -271,6 +271,22 @@ class service:
                                         # move down slowly ((total mins / steps) * ms in a min)
                                         # (curVol-muteVol) runs the full timer where a user might control their volume via kodi instead of cutting it short when assuming a set volume of 100%
                                         xbmc.sleep(round(audiointervallength / (curVol - muteVol) * 60000))
+                                        
+                                        #check if user pressed something while audio volume is going down and abort sleep process
+                                        idle_time_in_minutes = int(xbmc.getGlobalIdleTime())/60
+                                        if idle_time_in_minutes < max_time_in_minutes:
+                                            _log ( "DEBUG: User pressed a key while volume is going down. Aborting sleep process" )
+                                            #set volume back
+                                            _log ( "DEBUG: Setting back original volume")
+                                            xbmc.executebuiltin('SetVolume(%d,showVolumeBar)' % (dct["result"]["volume"]))
+                                            iCheckTime = check_time_next
+                                            _log ( "Progressdialog cancelled, next check in " + str(iCheckTime) + " min" )
+                                            # set next_check, so that it opens the dialog after "iCheckTime"
+                                            next_check = True
+                                            cancelled = True
+                                            break
+                                    if cancelled:
+                                        continue    
 
                             # stop player anyway
                             monitor.waitForAbort(5) # wait 5s before stopping
