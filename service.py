@@ -29,9 +29,9 @@ import os
 msgdialogprogress = xbmcgui.DialogProgress()
 
 addon_id = 'service.sleeptimer'
-selfAddon = xbmcaddon.Addon(id=addon_id)
-datapath = xbmc.translatePath(selfAddon.getAddonInfo('profile')).decode('utf-8')
-addonfolder = xbmc.translatePath(selfAddon.getAddonInfo('path')).decode('utf-8')
+selfAddon = xbmcaddon.Addon(addon_id)
+datapath = xbmc.translatePath(selfAddon.getAddonInfo('profile'))
+addonfolder = xbmc.translatePath(selfAddon.getAddonInfo('path'))
 debug=selfAddon.getSetting('debug_mode')
 
 __version__ = selfAddon.getAddonInfo('version')
@@ -39,7 +39,8 @@ check_time = selfAddon.getSetting('check_time')
 check_time_next = int(selfAddon.getSetting('check_time_next'))
 time_to_wait = int(selfAddon.getSetting('waiting_time_dialog'))
 audiochange = selfAddon.getSetting('audio_change')
-audiochangerate = int(selfAddon.getSetting('audio_change_rate'))
+muteVol = int(selfAddon.getSetting('mute_volume'))
+audiointervallength = int(selfAddon.getSetting('audio_interval_length'))
 global audio_enable
 audio_enable = str(selfAddon.getSetting('audio_enable'))
 video_enable = str(selfAddon.getSetting('video_enable'))
@@ -54,13 +55,13 @@ def translate(text):
     return selfAddon.getLocalizedString(text).encode('utf-8')
 
 def _log( message ):
-    print(addon_id + ": " + str(message))
+    xbmc.log(addon_id + ": " + str(message), level=xbmc.LOGDEBUG)
 
 # print the actual playing file in DEBUG-mode
 def print_act_playing_file():
     if debug == 'true':
         actPlayingFile = xbmc.Player().getPlayingFile()
-        _log ( "DEBUG: File: " + str(actPlayingFile) )
+        _log (str(actPlayingFile))
 
 # wait for abort - xbmc.sleep or time.sleep doesn't work
 # and prevents Kodi from exiting
@@ -108,8 +109,9 @@ class service:
     def __init__(self):
         FirstCycle = True
         next_check = False
+        monitor = xbmc.Monitor()
 
-        while True:
+        while not monitor.abortRequested():
             kodi_time = get_kodi_time()
             try:
                 supervise_start_time = int(selfAddon.getSetting('hour_start_sup').split(':')[0]+selfAddon.getSetting('hour_start_sup').split(':')[1])
@@ -153,7 +155,7 @@ class service:
                         _log ( "DEBUG: ----------------------------------------------------------------" )
 
                     # wait 15s before start to let Kodi finish the intro-movie
-                    if xbmc.Monitor().waitForAbort(15):
+                    if monitor.waitForAbort(15):
                         break
 
                     max_time_in_minutes = -1
@@ -238,7 +240,7 @@ class service:
                             percent = increment*secs/100
                             secs_left = str((time_to_wait - secs))
                             remaining_display = str(secs_left) + " seconds left."
-                            msgdialogprogress.update(percent,translate(30001),remaining_display)
+                            msgdialogprogress.update(int(percent),translate(30001))
                             xbmc.sleep(1000)
                             if (msgdialogprogress.iscanceled()):
                                 cancelled = True
@@ -260,42 +262,23 @@ class service:
                             if audiochange == 'true':
                                 resp = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": { "properties": [ "volume"] }, "id": 1}')
                                 dct = json.loads(resp)
-                                muteVol = 10
 
-                                if (dct.has_key("result")) and (dct["result"].has_key("volume")):
+                                if ("result" in dct) and ("volume" in dct["result"]):
                                     curVol = dct["result"]["volume"]
 
                                     for i in range(curVol - 1, muteVol - 1, -1):
                                         xbmc.executebuiltin('SetVolume(%d,showVolumeBar)' % (i))
-                                        # move down slowly
-                                        xbmc.sleep(audiochangerate)
-                                        
-                                        #check if user pressed something while audio volume is going down and abort sleep process
-                                        idle_time_in_minutes = int(xbmc.getGlobalIdleTime())/60
-                                        if idle_time_in_minutes < max_time_in_minutes:
-                                            _log ( "DEBUG: User pressed a key while volume is going down. Aborting sleep process" )
-                                            #set volume back
-                                            _log ( "DEBUG: Setting back original volume")
-                                            xbmc.executebuiltin('SetVolume(%d,showVolumeBar)' % (dct["result"]["volume"]))
-                                            iCheckTime = check_time_next
-                                            _log ( "Progressdialog cancelled, next check in " + str(iCheckTime) + " min" )
-                                            # set next_check, so that it opens the dialog after "iCheckTime"
-                                            next_check = True
-                                            cancelled = True
-                                            break
-                                    if cancelled:
-                                        continue
-                                            
-                                        
-                                        
+                                        # move down slowly ((total mins / steps) * ms in a min)
+                                        # (curVol-muteVol) runs the full timer where a user might control their volume via kodi instead of cutting it short when assuming a set volume of 100%
+                                        xbmc.sleep(round(audiointervallength / (curVol - muteVol) * 60000))
 
                             # stop player anyway
-                            xbmc.sleep(5000) # wait 5s before stopping
+                            monitor.waitForAbort(5) # wait 5s before stopping
                             xbmc.executebuiltin('PlayerControl(Stop)')
 
                             if audiochange == 'true':
-                                xbmc.sleep(2000) # wait 2s before changing the volume back
-                                if (dct.has_key("result")) and (dct["result"].has_key("volume")):
+                                monitor.waitForAbort(2) # wait 2s before changing the volume back
+                                if ("result" in dct) and ("volume" in dct["result"]):
                                     curVol = dct["result"]["volume"]
                                     # we can move upwards fast, because there is nothing playing
                                     xbmc.executebuiltin('SetVolume(%d,showVolumeBar)' % (curVol))
@@ -303,9 +286,9 @@ class service:
                             if enable_screensaver == 'true':
                                 if debug == 'true':
                                     _log ( "DEBUG: Activating screensaver" )
-                                xbmc.executebuiltin('ActivateScreensaver')   
-                            
-                            #Run a custom cmd after playback is stopped
+                                xbmc.executebuiltin('ActivateScreensaver')
+
+                            # Run a custom cmd after playback is stopped
                             if custom_cmd == 'true':
                                 if debug == 'true':
                                     _log ( "DEBUG: Running custom script" )
@@ -325,5 +308,6 @@ class service:
                     _log ( "DEBUG: diff_between_idle_and_check_time: " + str(diff_between_idle_and_check_time) )
 
                 do_next_check(iCheckTime)
+                monitor.waitForAbort(1)
 
 service()
