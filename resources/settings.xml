@@ -15,14 +15,16 @@
 		<setting id="video_enable" label="30010" type="bool" default="true" visible="true"/>
 		<setting id="audio_enable" label="30011" type="bool" default="true" visible="true"/>
 		<setting label="30012" type="lsep"/>
-		<setting id="max_time_video" label="30013" default="150" enable="eq(-3,true)" type="slider" range="30,5,420" option="int"/>
-		<setting id="max_time_audio" label="30014" default="150" enable="eq(-3,true)" type="slider" range="30,5,420" option="int"/>
+		<setting id="max_time_video" label="30013" default="45" enable="eq(-3,true)" type="number" />
+		<setting id="max_time_audio" label="30014" default="45" enable="eq(-3,true)" type="number" />
 		<setting label="30024" type="lsep"/>
-		<setting id="supervision_mode" label="30024" type="enum" default="0" values="30027|30028"/>
+		<setting id="supervision_mode" label="30024" type="enum" default="0" lvalues="30027|30028"/>
 		<setting label="30025" type="text" id="hour_start_sup" visible="eq(-1,1)" default="00:00"/>
 		<setting label="30026" type="text" id="hour_end_sup" visible="eq(-2,1)" default="00:00"/>
 	</category>
 	<category label="30015">
+		<setting id="touchmode" label="30030" type="bool" default="false" visible="true"/>
+		<setting type="sep"/>
 		<setting id="debug_mode" label="30016" type="bool" default="false" visible="true"/>
 		<setting label="30017" type="lsep" enable="eq(-1,true)"/>
 		<setting type="sep"/>
