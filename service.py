@@ -111,36 +111,44 @@ class Touchmode:
     def getSecondsFromNow(self, x):
         return (datetime.datetime.now()-x).total_seconds()
     
-    def checkStop(self):
-        if not xbmc.Player().isPlaying():
-            
-            if self.lastStopTimeTest is None:
-                _log ( "Touch Mode: StopTimeTest" )
-                self.lastStopTimeTest = datetime.datetime.now()
-            else:                
-                if  self.getSecondsFromNow(self.lastStopTimeTest) > touchmodeStopTime:                    
-                    self.lastStopTimeStable = self.lastStopTimeTest
-                    _log ( "Touch Mode: Set StopTime " + str(self.lastStopTimeStable) )
-                else:
-                    _log ( "Touch Mode: Waiting for stable" )
-                    #wait until touchmodeStopTime is elapsed - maybe only loading time due to new movie 
-                    pass
-        else:
-            self.lastStopTimeTest = None
+    def checkStateChange(self):
+        if xbmc.Player().isPlaying() != self.lastStateIsPlaying:
+            _log ( "Touch mode: " + repr(self.getSecondsFromNow(self.lastStateChangeTime)) +  " > " + repr(float(touchmodeStopTime)))
+            if self.getSecondsFromNow(self.lastStateChangeTime) > float(touchmodeStopTime)*60:                
+                self.lastStateChangeTime = datetime.datetime.now()
+                self.lastStateIsPlaying = xbmc.Player().isPlaying()
+                _log ( "Touch mode: Playing state change detected. Now isPlaying=" + repr(self.lastStateIsPlaying))
+                return True
+            else:
+                _log ( "Delay... Waiting if change is permanent")
+                return False
+        return False
+        
+    def update(self):
+        hasChanged = self.checkStateChange()
+        if xbmc.Player().isPlaying():
+            if hasChanged:
+                self.lastStopTime = datetime.datetime.now()                                                
+        else:  
+            self.lastStopTime = datetime.datetime.now()
+        _log ( "Touch Mode: Check Stop: Playing="+ str(xbmc.Player().isPlaying()) +" hasChanged=" +str(hasChanged) + " LastStop=" + str(self.lastStopTime))                  
     
     def __init__(self):
         _log ( "Init Touch mode" )
-        self.lastStopTimeTest = None        
-        self.lastStopTimeStable = datetime.datetime.now()
-        self.checkStop()        
+        self.lastStateIsPlaying = xbmc.Player().isPlaying()
+        self.lastStateChangeTime = datetime.datetime.now() 
+        self.lastStopTime = datetime.datetime.now()
+        self.update()        
         
     def getGlobalIdleTime(self):
-        self.checkStop()
+        self.update()
         if xbmc.Player().isPlaying():
-            result = self.getSecondsFromNow(self.lastStopTimeStable)            
+            result = int(self.getSecondsFromNow(self.lastStopTime))            
         else:            
             result = 0
-        _log ( "Touch Mode: Return Idle Time " + str(result) )
+        _log ( "XBMC Idle Time" + repr(xbmc.getGlobalIdleTime()))
+        _log ( "Touch Mode: Return Idle Time " + repr(result) )
+        return result
         
 
 class service:
@@ -200,7 +208,7 @@ class service:
                     max_time_in_minutes = -1
                     FirstCycle = False
                 
-                if not touchmode:
+                if touchmode:
                     idle_time = touchmode.getGlobalIdleTime()
                 else:
                     idle_time = xbmc.getGlobalIdleTime()
