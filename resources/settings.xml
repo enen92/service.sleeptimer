@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
 	<category label="30005">
-		<setting id="check_time" label="30002" default="5" type="slider" range="1,5,120" option="int"/>
+		<setting id="check_time" label="30002" default="1" type="slider" range="1,5,120" option="int"/>
 		<setting id="waiting_time_dialog" label="30003" type="slider" default="60" range="30,5,180" option="int"/>
 		<setting id="audio_change" label="30004" type="bool" default="true" visible="true"/>
 		<setting id="audio_interval_length" label="30006" enable="eq(-1,true)" type="slider" default="1" range="1,1,120" option="int"/>
@@ -24,6 +24,7 @@
 	</category>
 	<category label="30015">
 		<setting id="touchmode" label="30030" type="bool" default="false" visible="true"/>
+		<setting id="touchmodeStopTime" label="30031" default="2" type="number" />
 		<setting type="sep"/>
 		<setting id="debug_mode" label="30016" type="bool" default="false" visible="true"/>
 		<setting label="30017" type="lsep" enable="eq(-1,true)"/>

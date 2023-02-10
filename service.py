@@ -49,6 +49,8 @@ max_time_video = int(selfAddon.getSetting('max_time_video'))
 enable_screensaver = selfAddon.getSetting('enable_screensaver')
 custom_cmd = selfAddon.getSetting('custom_cmd')
 cmd = selfAddon.getSetting('cmd')
+touchmode = selfAddon.getSetting('touchmode')
+touchmodeStopTime = selfAddon.getSetting('touchmodeStopTime')
 
 # Functions:
 def translate(text):
@@ -104,12 +106,49 @@ def should_i_supervise(kodi_time,supervise_start_time,supervise_end_time):
                 return True
             else:
                 return False
+            
+class Touchmode:    
+    def getSecondsFromNow(self, x):
+        return (datetime.datetime.now()-x).total_seconds()
+    
+    def checkStop(self):
+        if not xbmc.Player().isPlaying():
+            
+            if self.lastStopTimeTest is None:
+                _log ( "Touch Mode: StopTimeTest" )
+                self.lastStopTimeTest = datetime.datetime.now()
+            else:                
+                if  self.getSecondsFromNow(self.lastStopTimeTest) > touchmodeStopTime:                    
+                    self.lastStopTimeStable = self.lastStopTimeTest
+                    _log ( "Touch Mode: Set StopTime " + str(self.lastStopTimeStable) )
+                else:
+                    _log ( "Touch Mode: Waiting for stable" )
+                    #wait until touchmodeStopTime is elapsed - maybe only loading time due to new movie 
+                    pass
+        else:
+            self.lastStopTimeTest = None
+    
+    def __init__(self):
+        _log ( "Init Touch mode" )
+        self.lastStopTimeTest = None        
+        self.lastStopTimeStable = datetime.datetime.now()
+        self.checkStop()        
+        
+    def getGlobalIdleTime(self):
+        self.checkStop()
+        if xbmc.Player().isPlaying():
+            result = self.getSecondsFromNow(self.lastStopTimeStable)            
+        else:            
+            result = 0
+        _log ( "Touch Mode: Return Idle Time " + str(result) )
+        
 
 class service:
     def __init__(self):
         FirstCycle = True
         next_check = False
         monitor = xbmc.Monitor()
+        touchmode = Touchmode()
 
         while not monitor.abortRequested():
             kodi_time = get_kodi_time()
@@ -142,15 +181,15 @@ class service:
                         _log ( "DEBUG: ################################################################" )
                         # Set this low values for easier debugging!
                         _log ( "DEBUG: debug is enabled! Override Settings:" )
-                        enable_audio = 'true'
+                        #enable_audio = 'true'
                         _log ( "DEBUG: -> enable_audio: " + str(enable_audio) )
-                        maxaudio_time_in_minutes = 1
+                        #maxaudio_time_in_minutes = 1
                         _log ( "DEBUG: -> maxaudio_time_in_minutes: " + str(maxaudio_time_in_minutes) )
-                        enable_video = 'true'
+                        #enable_video = 'true'
                         _log ( "DEBUG: -> enable_video: " + str(enable_audio) )
-                        maxvideo_time_in_minutes = 1
+                        #maxvideo_time_in_minutes = 1
                         _log ( "DEBUG: -> maxvideo_time_in_minutes: " + str(maxvideo_time_in_minutes) )
-                        iCheckTime = 1
+                        #iCheckTime = 1
                         _log ( "DEBUG: -> check_time: " + str(iCheckTime) )
                         _log ( "DEBUG: ----------------------------------------------------------------" )
 
@@ -160,8 +199,11 @@ class service:
 
                     max_time_in_minutes = -1
                     FirstCycle = False
-
-                idle_time = xbmc.getGlobalIdleTime()
+                
+                if not touchmode:
+                    idle_time = touchmode.getGlobalIdleTime()
+                else:
+                    idle_time = xbmc.getGlobalIdleTime()
                 idle_time_in_minutes = int(idle_time)/60
 
                 if xbmc.Player().isPlaying():

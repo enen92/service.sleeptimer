@@ -79,7 +79,7 @@ msgid "Debug"
 msgstr ""
 
 msgctxt "#30016"
-msgid "Debug mode"
+msgid "Debug mode (overwrites some settings!)"
 msgstr ""
 
 msgctxt "#30017"
@@ -136,4 +136,8 @@ msgstr ""
 
 msgctxt "#30030"
 msgid "Touch mode (Timer reset on start playing instead of user interaction)"
+msgstr ""
+
+msgctxt "#30031"
+msgid "Touch mode Stop Time (min)"
 msgstr ""
