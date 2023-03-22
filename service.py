@@ -30,8 +30,8 @@ msgdialogprogress = xbmcgui.DialogProgress()
 
 addon_id = 'service.sleeptimer'
 selfAddon = xbmcaddon.Addon(addon_id)
-datapath = xbmc.translatePath(selfAddon.getAddonInfo('profile'))
-addonfolder = xbmc.translatePath(selfAddon.getAddonInfo('path'))
+datapath = xbmcvfs.translatePath(selfAddon.getAddonInfo('profile'))
+addonfolder = xbmcvfs.translatePath(selfAddon.getAddonInfo('path'))
 debug=selfAddon.getSetting('debug_mode')
 
 __version__ = selfAddon.getAddonInfo('version')
