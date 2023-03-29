@@ -18,6 +18,7 @@
 
 import time
 import datetime
+import math
 import xbmc
 import xbmcplugin
 import xbmcgui
@@ -123,27 +124,77 @@ class Touchmode:
                 _log ( "Delay... Waiting if change is permanent")
                 return False
         return False
+    
+    def checkSeekOrNextMovie(self):
+        _log( "checkSeekOrNextMovie: " + repr(check_time))
+        try:
+            if xbmc.Player().getPlayingFile() is not None:
+                if xbmc.Player().getPlayingFile() == self.lastPlayingFile:
+                    _log ( "Still the same movie. Checking for seek user interaction" + str(self.lastGetTime) + " " + str( xbmc.Player().getTime()) + "  check_time = " + str(check_time))
+                    
+                    if math.fabs(xbmc.Player().getTime() - int(check_time)*60 - self.lastGetTime) >  3.0: #3sec of tolerance
+                        _log ( "Seek detected. => User interaction")   
+                        self.setMovieDetails()      
+                        return True                       
+                    else:
+                        self.setMovieDetails()
+                        #no seek detected
+                        return False
+                else:
+                    if self.lastGetTime > self.lastDuration - int(check_time)*60 - 3.0: #3sec of tolerance
+                        _log ( "Next movie was selected because the old one reached its end.")
+                        self.setMovieDetails()
+                        return False
+                    else:
+                        _log ( "Changed movie by User interaction detected")
+                        self.setMovieDetails()                                                                      
+                        return True                    
+            else:
+                if self.lastPlayingFile is not None: 
+                    _log ( "Stop detected by user")
+                    self.setMovieDetails()
+                    return True
+                else:
+                    self.setMovieDetails()
+                    return False
+        except Exception as e:
+            _log( "Exception in checkSeekOrNextMovie: " + str(e))
+            return False
+        return False
+    
         
     def update(self):
         hasChanged = self.checkStateChange()
+        hasChanged2 = self.checkSeekOrNextMovie()
         if xbmc.Player().isPlaying():
-            if hasChanged:
-                self.lastStopTime = datetime.datetime.now()                                                
+            if hasChanged or hasChanged2:
+                self.lastUserInteractionTime = datetime.datetime.now()                                                
         else:  
-            self.lastStopTime = datetime.datetime.now()
-        _log ( "Touch Mode: Check Stop: Playing="+ str(xbmc.Player().isPlaying()) +" hasChanged=" +str(hasChanged) + " LastStop=" + str(self.lastStopTime))                  
+            self.lastUserInteractionTime = datetime.datetime.now()
+        _log ( "Touch Mode: Check Stop: Playing="+ str(xbmc.Player().isPlaying()) +" hasChanged=" +str(hasChanged) + " lastUserInteractionTime=" + str(self.lastUserInteractionTime))     
+    
+    def setMovieDetails(self):
+        try:
+            self.lastPlayingFile = xbmc.Player().getPlayingFile()
+            self.lastGetTime = xbmc.Player().getTime()
+            self.lastDuration = xbmc.Player().getTotalTime()
+        except:
+            self.lastPlayingFile = None
+            self.lastGetTime = 0.0
+            self.lastDuration = 100.0             
     
     def __init__(self):
         _log ( "Init Touch mode" )
         self.lastStateIsPlaying = xbmc.Player().isPlaying()
         self.lastStateChangeTime = datetime.datetime.now() 
-        self.lastStopTime = datetime.datetime.now()
+        self.lastUserInteractionTime = datetime.datetime.now()
+        self.setMovieDetails()
         self.update()        
         
     def getGlobalIdleTime(self):
         self.update()
         if xbmc.Player().isPlaying():
-            result = int(self.getSecondsFromNow(self.lastStopTime))            
+            result = int(self.getSecondsFromNow(self.lastUserInteractionTime))            
         else:            
             result = 0
         _log ( "XBMC Idle Time" + repr(xbmc.getGlobalIdleTime()))
@@ -157,6 +208,7 @@ class service:
         next_check = False
         monitor = xbmc.Monitor()
         touchmode = Touchmode()
+        diff_between_idle_and_check_time = None
 
         while not monitor.abortRequested():
             kodi_time = get_kodi_time()
@@ -374,6 +426,9 @@ class service:
                     _log ( "DEBUG: diff_between_idle_and_check_time: " + str(diff_between_idle_and_check_time) )
 
                 do_next_check(iCheckTime)
+                monitor.waitForAbort(1)
+            else:
+                do_next_check(check_time)
                 monitor.waitForAbort(1)
 
 service()
