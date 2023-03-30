@@ -135,9 +135,5 @@ msgid "Set the minimum volume %"
 msgstr ""
 
 msgctxt "#30030"
-msgid "Touch mode (Timer reset on start playing instead of user interaction)"
-msgstr ""
-
-msgctxt "#30031"
-msgid "Touch mode Stop Time (min)"
+msgid "Alternative mode (user interaction is detected differently)"
 msgstr ""
