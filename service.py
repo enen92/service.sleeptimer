@@ -150,6 +150,14 @@ class AlternativeDetectionMode( xbmc.Player ):
         return result
         
 
+
+def getIdleTimeInSeconds(alternativeMode):
+    if useAlternativeMode:
+        idle_time = alternativeMode.getGlobalIdleTime()
+    else:
+        idle_time = xbmc.getGlobalIdleTime()
+    return idle_time
+
 class service:
     def __init__(self):
         FirstCycle = True
@@ -208,10 +216,7 @@ class service:
                     max_time_in_minutes = -1
                     FirstCycle = False
                 
-                if useAlternativeMode:
-                    idle_time = alternativeMode.getGlobalIdleTime()
-                else:
-                    idle_time = xbmc.getGlobalIdleTime()
+                idle_time = getIdleTimeInSeconds(alternativeMode)
                 idle_time_in_minutes = int(idle_time)/60
 
                 if xbmc.Player().isPlaying():
@@ -323,7 +328,7 @@ class service:
                                         xbmc.sleep(round(audiointervallength / (curVol - muteVol) * 60000))
                                         
                                         #check if user pressed something while audio volume is going down and abort sleep process
-                                        idle_time_in_minutes = int(xbmc.getGlobalIdleTime())/60
+                                        idle_time_in_minutes = int(getIdleTimeInSeconds(alternativeMode))/60
                                         if idle_time_in_minutes < max_time_in_minutes:
                                             _log ( "DEBUG: User pressed a key while volume is going down. Aborting sleep process" )
                                             #set volume back
