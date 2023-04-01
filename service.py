@@ -112,41 +112,42 @@ class AlternativeDetectionMode( xbmc.Player ):
 
     def __init__( self, *args ):  
         _log ( "Init Alternative mode" )      
-        self.setTime()
+        self.resetTime()
         
     def getSecondsFromNow(self, x):
         return (datetime.datetime.now()-x).total_seconds()
 
-    def setTime(self):
+    def resetTime(self):
         self.lastUserInteractionTime = datetime.datetime.now()
       
     def onPlayBackSeekChapter(self, chapter):
         _log( "onPlayBackSeekChapter" )
-        self.setTime()  
+        self.resetTime()  
         
     def onPlayBackSeek(self, time, seekOffset):
         _log( "onPlayBackSeek" )
-        self.setTime()
+        self.resetTime()
 
     def onPlayBackResumed( self ):
         # Will be called when xbmc starts playing a file
         _log( "onPlayBackResumed" )
-        self.setTime()
+        self.resetTime()
 
     def onPlayBackPaused( self ):
         # Will be called when xbmc stops playing a file
         _log( "onPlayBackPaused" )
-        self.setTime()
+        self.resetTime()
 
     def onPlayBackStopped( self ):
         # Will be called when user stops xbmc playing a file
         _log( "onPlayBackStopped" )
-        self.setTime()
+        self.resetTime()
         
     def getGlobalIdleTime(self):
-        result = int(self.getSecondsFromNow(self.lastUserInteractionTime))                    
-        _log ( "XBMC        Idle Time " + repr(xbmc.getGlobalIdleTime()))
-        _log ( "Alternative Idle Time " + repr(result) )
+        result = int(self.getSecondsFromNow(self.lastUserInteractionTime))
+        if debug == 'true':
+            _log ( "XBMC        Idle Time " + repr(xbmc.getGlobalIdleTime()))
+            _log ( "Alternative Idle Time " + repr(result) )
         return result
         
 
@@ -299,6 +300,7 @@ class service:
                             xbmc.sleep(1000)
                             if (msgdialogprogress.iscanceled()):
                                 cancelled = True
+                                alternativeMode.resetTime()
                                 if debug == 'true':
                                     _log ( "DEBUG: Progressdialog cancelled" )
                                 break
