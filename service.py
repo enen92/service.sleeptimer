@@ -113,6 +113,7 @@ class AlternativeDetectionMode( xbmc.Player ):
     def __init__( self, *args ):  
         _log ( "Init Alternative mode" )      
         self.resetTime()
+        self.lastEnded = None
         
     def getSecondsFromNow(self, x):
         return (datetime.datetime.now()-x).total_seconds()
@@ -141,6 +142,30 @@ class AlternativeDetectionMode( xbmc.Player ):
     def onPlayBackStopped( self ):
         # Will be called when user stops xbmc playing a file
         _log( "onPlayBackStopped" )
+        self.resetTime()
+        
+    def onPlayBackStarted( self ):
+        # Will be called when user stops xbmc playing a file        
+        if self.lastEnded is None:
+            _log("onPlayBackStarted: No ended movie detected before => user interaction")
+            self.resetTime()
+            return
+        
+        delayFromLastEnded = self.getSecondsFromNow(self.lastEnded)            
+        _log( "onPlayBackStarted: Last Ended was detected within " + str(delayFromLastEnded) + "seconds" )
+        
+        if delayFromLastEnded is not None and delayFromLastEnded < 60:
+            _log("onPlayBackStarted: Last movie endend => No user interaction")
+            #do nothing
+        else:
+            _log("onPlayBackStarted: Last movie did not end during 60s => User interaction")
+            self.resetTime()
+            
+        
+    def onPlayBackEnded( self ):
+        _log( "onPlayBackEnded" )
+        _log("Storing last Ended time")
+        self.lastEnded = datetime.datetime.now()
         self.resetTime()
         
     def getGlobalIdleTime(self):
