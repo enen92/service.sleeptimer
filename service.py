@@ -166,7 +166,7 @@ class AlternativeDetectionMode( xbmc.Player ):
         _log( "onPlayBackEnded" )
         _log("Storing last Ended time")
         self.lastEnded = datetime.datetime.now()
-        self.resetTime()
+        #self.resetTime()
         
     def getGlobalIdleTime(self):
         result = int(self.getSecondsFromNow(self.lastUserInteractionTime))
