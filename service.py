@@ -58,6 +58,10 @@ def translate(text):
 
 def _log( message ):
     xbmc.log(addon_id + ": " + str(message), level=xbmc.LOGDEBUG)
+    
+def _debug( message ):
+    if debug == 'true':
+        _log ( "DEBUG: " + str(message) )
 
 # print the actual playing file in DEBUG-mode
 def print_act_playing_file():
@@ -122,57 +126,57 @@ class AlternativeDetectionMode( xbmc.Player ):
         self.lastUserInteractionTime = datetime.datetime.now()
       
     def onPlayBackSeekChapter(self, chapter):
-        _log( "onPlayBackSeekChapter" )
+        _debug( "onPlayBackSeekChapter" )
         self.resetTime()  
         
     def onPlayBackSeek(self, time, seekOffset):
-        _log( "onPlayBackSeek" )
+        _debug( "onPlayBackSeek" )
         self.resetTime()
 
     def onPlayBackResumed( self ):
         # Will be called when xbmc starts playing a file
-        _log( "onPlayBackResumed" )
+        _debug( "onPlayBackResumed" )
         self.resetTime()
 
     def onPlayBackPaused( self ):
         # Will be called when xbmc stops playing a file
-        _log( "onPlayBackPaused" )
+        _debug( "onPlayBackPaused" )
         self.resetTime()
 
     def onPlayBackStopped( self ):
         # Will be called when user stops xbmc playing a file
-        _log( "onPlayBackStopped" )
+        _debug( "onPlayBackStopped" )
         self.resetTime()
         
     def onPlayBackStarted( self ):
         # Will be called when user stops xbmc playing a file        
         if self.lastEnded is None:
-            _log("onPlayBackStarted: No ended movie detected before => user interaction")
+            _debug("onPlayBackStarted: No ended movie detected before => user interaction")
             self.resetTime()
             return
         
         delayFromLastEnded = self.getSecondsFromNow(self.lastEnded)            
-        _log( "onPlayBackStarted: Last Ended was detected within " + str(delayFromLastEnded) + "seconds" )
+        _debug( "onPlayBackStarted: Last Ended was detected within " + str(delayFromLastEnded) + "seconds" )
         
         if delayFromLastEnded is not None and delayFromLastEnded < 60:
-            _log("onPlayBackStarted: Last movie endend => No user interaction")
+            _debug("onPlayBackStarted: Last movie endend => No user interaction")
             #do nothing
         else:
-            _log("onPlayBackStarted: Last movie did not end during 60s => User interaction")
+            _debug("onPlayBackStarted: Last movie did not end during 60s => User interaction")
             self.resetTime()
             
         
     def onPlayBackEnded( self ):
-        _log( "onPlayBackEnded" )
-        _log("Storing last Ended time")
+        _debug( "onPlayBackEnded" )
+        _debug("Storing last Ended time")
         self.lastEnded = datetime.datetime.now()
         #self.resetTime()
         
     def getGlobalIdleTime(self):
         result = int(self.getSecondsFromNow(self.lastUserInteractionTime))
-        if debug == 'true':
-            _log ( "XBMC        Idle Time " + repr(xbmc.getGlobalIdleTime()))
-            _log ( "Alternative Idle Time " + repr(result) )
+        
+        _debug ( "XBMC        Idle Time " + repr(xbmc.getGlobalIdleTime()))
+        _debug ( "Alternative Idle Time " + repr(result) )
         return result
         
 
@@ -265,8 +269,7 @@ class service:
                             what_is_playing = "audio"
                             max_time_in_minutes = maxaudio_time_in_minutes
                         else:
-                            if debug == 'true':
-                                _log ( "DEBUG: Player is playing Audio, but check is disabled" )
+                            _debug ( "DEBUG: Player is playing Audio, but check is disabled" )
                             do_next_check(iCheckTime)
                             continue
 
@@ -278,8 +281,7 @@ class service:
                             what_is_playing = "video"
                             max_time_in_minutes = maxvideo_time_in_minutes
                         else:
-                            if debug == 'true':
-                                _log ( "DEBUG: Player is playing Video, but check is disabled" )
+                            _debug ( "DEBUG: Player is playing Video, but check is disabled" )
                             do_next_check(iCheckTime)
                             continue
 
@@ -294,20 +296,16 @@ class service:
                         do_next_check(iCheckTime)
                         continue
 
-                    if debug == 'true':
-                        _log ( "DEBUG: what_is_playing: " + str(what_is_playing) )
-
-                    if debug == 'true':
-                        _log ( "DEBUG: idle_time: '" + str(idle_time) + "s'; idle_time_in_minutes: '" + str(idle_time_in_minutes) + "'" )
-                        _log ( "DEBUG: max_time_in_minutes: " + str(max_time_in_minutes) )
+                    _debug ( "DEBUG: what_is_playing: " + str(what_is_playing) )
+                    _debug ( "DEBUG: idle_time: '" + str(idle_time) + "s'; idle_time_in_minutes: '" + str(idle_time_in_minutes) + "'" )
+                    _debug ( "DEBUG: max_time_in_minutes: " + str(max_time_in_minutes) )
 
                     # only display the Progressdialog, if audio or video is enabled AND idle limit is reached
 
                     # Check if what_is_playing is not "other" and idle time exceeds limit
                     if ( what_is_playing != "other" and idle_time_in_minutes >= max_time_in_minutes ):
 
-                        if debug == 'true':
-                            _log ( "DEBUG: idle_time exceeds max allowed. Display Progressdialog" )
+                        _debug ( "DEBUG: idle_time exceeds max allowed. Display Progressdialog" )
 
                         ret = msgdialogprogress.create(translate(30000),translate(30001))
                         secs=0
@@ -326,8 +324,7 @@ class service:
                             if (msgdialogprogress.iscanceled()):
                                 cancelled = True
                                 alternativeMode.resetTime()
-                                if debug == 'true':
-                                    _log ( "DEBUG: Progressdialog cancelled" )
+                                _debug ( "DEBUG: Progressdialog cancelled" )
                                 break
                         if cancelled == True:
                             iCheckTime = check_time_next
@@ -347,8 +344,11 @@ class service:
 
                                 if ("result" in dct) and ("volume" in dct["result"]):
                                     curVol = dct["result"]["volume"]
+                                    
+                                    _debug ( "DEBUG: Original volume value is " + str(curVol) )
 
                                     for i in range(curVol - 1, muteVol - 1, -1):
+                                        _debug ( "DEBUG: Reducing volume to " + str(i))
                                         xbmc.executebuiltin('SetVolume(%d,showVolumeBar)' % (i))
                                         # move down slowly ((total mins / steps) * ms in a min)
                                         # (curVol-muteVol) runs the full timer where a user might control their volume via kodi instead of cutting it short when assuming a set volume of 100%
@@ -357,9 +357,9 @@ class service:
                                         #check if user pressed something while audio volume is going down and abort sleep process
                                         idle_time_in_minutes = int(getIdleTimeInSeconds(alternativeMode))/60
                                         if idle_time_in_minutes < max_time_in_minutes:
-                                            _log ( "DEBUG: User pressed a key while volume is going down. Aborting sleep process" )
+                                            _debug ( "DEBUG: User pressed a key while volume is going down. Aborting sleep process" )
                                             #set volume back
-                                            _log ( "DEBUG: Setting back original volume")
+                                            _debug ( "DEBUG: Setting back original volume" + str(dct["result"]["volume"]))
                                             xbmc.executebuiltin('SetVolume(%d,showVolumeBar)' % (dct["result"]["volume"]))
                                             iCheckTime = check_time_next
                                             _log ( "Progressdialog cancelled, next check in " + str(iCheckTime) + " min" )
@@ -371,32 +371,35 @@ class service:
                                         continue    
 
                             # stop player anyway
+                            _debug ( "DEBUG: Waiting before stop" + str(curVol) )
                             monitor.waitForAbort(5) # wait 5s before stopping
+                            _debug ( "DEBUG: Stopping... " + str(curVol) )
                             xbmc.executebuiltin('PlayerControl(Stop)')
 
                             if audiochange == 'true':
                                 monitor.waitForAbort(2) # wait 2s before changing the volume back
-                                if ("result" in dct) and ("volume" in dct["result"]):
+                                if ("result" in dct) and ("volume" in dct["result"]):                                    
                                     curVol = dct["result"]["volume"]
+                                    _debug ( "DEBUG: Reset volume to original value" + str(curVol) )
                                     # we can move upwards fast, because there is nothing playing
                                     xbmc.executebuiltin('SetVolume(%d,showVolumeBar)' % (curVol))
+                                else:
+                                    _debug ( "DEBUG: DID NOT Reset volume 1 to original value" + str(curVol) )
+                            else:
+                                _debug ( "DEBUG: DID NOT Reset volume 2 to original value" + str(curVol) )
 
                             if enable_screensaver == 'true':
-                                if debug == 'true':
-                                    _log ( "DEBUG: Activating screensaver" )
+                                _debug ( "DEBUG: Activating screensaver" )
                                 xbmc.executebuiltin('ActivateScreensaver')
 
                             # Run a custom cmd after playback is stopped
                             if custom_cmd == 'true':
-                                if debug == 'true':
-                                    _log ( "DEBUG: Running custom script" )
+                                _debug ( "DEBUG: Running custom script" )
                                 os.system(cmd)
                     else:
-                        if debug == 'true':
-                            _log ( "DEBUG: Playing the stream, time does not exceed max limit" )
+                        _debug ( "DEBUG: Playing the stream, time does not exceed max limit" )
                 else:
-                    if debug == 'true':
-                        _log ( "DEBUG: Not playing any media file" )
+                    _debug ( "DEBUG: Not playing any media file" )
                     # reset max_time_in_minutes
                     max_time_in_minutes = -1
 
