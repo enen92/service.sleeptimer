@@ -373,11 +373,9 @@ class service:
                             # stop player anyway
                             _debug ( "DEBUG: Waiting before stop" + str(curVol) )
                             monitor.waitForAbort(5) # wait 5s before stopping
-                            _debug ( "DEBUG: Stopping... " + str(curVol) )
-                            xbmc.executebuiltin('PlayerControl(Stop)')
 
                             if audiochange == 'true':
-                                monitor.waitForAbort(2) # wait 2s before changing the volume back
+                                #monitor.waitForAbort(2) # wait 2s before changing the volume back
                                 if ("result" in dct) and ("volume" in dct["result"]):                                    
                                     curVol = dct["result"]["volume"]
                                     _debug ( "DEBUG: Reset volume to original value" + str(curVol) )
@@ -387,6 +385,9 @@ class service:
                                     _debug ( "DEBUG: DID NOT Reset volume 1 to original value" + str(curVol) )
                             else:
                                 _debug ( "DEBUG: DID NOT Reset volume 2 to original value" + str(curVol) )
+                                                            
+                            _debug ( "DEBUG: Stopping... " + str(curVol) )                            
+                            xbmc.executebuiltin('PlayerControl(Stop)')
 
                             if enable_screensaver == 'true':
                                 _debug ( "DEBUG: Activating screensaver" )
